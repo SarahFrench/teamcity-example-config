@@ -1,5 +1,4 @@
 import jetbrains.buildServer.configs.kotlin.*
-import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -67,13 +66,6 @@ fun MMUpstreamTesting() : Project {
         buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
     }
 }
-
-object GoCodeVCSRoot : GitVcsRoot({
-    name = "https://github.com/SarahFrench/teamcity-example#refs/heads/main"
-    url = "https://github.com/SarahFrench/teamcity-example"
-    branch = "refs/heads/main"
-    branchSpec = "+refs/heads/release-*"
-})
 
 fun AccTestBuildConfig(parentId: Id, number: Number, path: String) : BuildType {
 
