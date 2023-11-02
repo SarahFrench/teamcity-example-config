@@ -40,22 +40,30 @@ fun ParentProject() : Project {
 }
 
 fun NightlyTests() : Project {
-    var id = RelativeId("Google_NightlyTests") // Passed to child resources for making IDs
+    var id = RelativeId("NightlyTests") // Passed to child resources for making IDs
 
     return Project {
         id("Google_NightlyTests")
         name = "[Sarah Test] Nightly Tests"
+
+        // VCS Root used by builds. This is separate to the VCS Root used to pull in versioned settings.
+        vcsRoot(GoCodeVCSRoot)
+
         buildType(AccTestBuildConfig(id,1, "internal/services/packageA"))
         buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
     }
 }
 
 fun MMUpstreamTesting() : Project {
-    var id = RelativeId("Google_MMUpstreamTesting") // Passed to child resources for making IDs
+    var id = RelativeId("MMUpstreamTesting") // Passed to child resources for making IDs
 
     return Project {
         id("Google_MMUpstreamTesting")
         name = "[Sarah Test] MM Upstream Testing"
+
+        // VCS Root used by builds. This is separate to the VCS Root used to pull in versioned settings.
+        vcsRoot(GoCodeVCSRoot)
+
         buildType(AccTestBuildConfig(id, 1, "internal/services/packageA"))
         buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
     }
