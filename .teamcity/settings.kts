@@ -78,7 +78,7 @@ fun AccTestBuildConfig(parentId: Id, number: Number, path: String) : BuildType {
 
     return BuildType {
 
-        id = AbsoluteId("$parentId-my-build-$number")
+        id = AbsoluteId("$parentId_my_build_$number") // Need to re-add the replace char function
         name = "My Build $number"
 
         vcs {
