@@ -1,6 +1,4 @@
 import jetbrains.buildServer.configs.kotlin.*
-import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
-import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
 /*
@@ -36,16 +34,22 @@ fun ParentProject() : Project {
             params {
                 param("TEST-PARAM", "pls ignore")
             }
-            subProject(MySubProject)
+            subProject(NightlyTests)
+            subProject(MMUpstreamTesting)
         }
 }
 
-object MySubProject : Project({
-    id("Sarah_Test_Project_SubProject")
-    name = "Sarah Test Project SubProject"
+object NightlyTests : Project({
+    id("Google_NightlyTests")
+    name = "[Sarah Test] Sarah Test Project SubProject"
 })
 
-object HttpsGithubComSarahFrenchTeamcityExampleRefsHeadsMain : GitVcsRoot({
+object MMUpstreamTesting : Project({
+    id("Google_MMUpstreamTesting")
+    name = "[Sarah Test] MM UpstreamTesting"
+})
+
+object GoCodeVCSRoot : GitVcsRoot({
     name = "https://github.com/SarahFrench/teamcity-example#refs/heads/main"
     url = "https://github.com/SarahFrench/teamcity-example"
     branch = "refs/heads/main"
