@@ -34,20 +34,32 @@ fun ParentProject() : Project {
             params {
                 param("TEST-PARAM", "pls ignore")
             }
-            subProject(NightlyTests)
-            subProject(MMUpstreamTesting)
+            subProject(NightlyTests())
+            subProject(MMUpstreamTesting())
         }
 }
 
-object NightlyTests : Project({
-    id("Google_NightlyTests")
-    name = "[Sarah Test] Sarah Test Project SubProject"
-})
+fun NightlyTests() : Project {
+    var id = RelativeId("Google_NightlyTests") // Passed to child resources for making IDs
 
-object MMUpstreamTesting : Project({
-    id("Google_MMUpstreamTesting")
-    name = "[Sarah Test] MM UpstreamTesting"
-})
+    return Project {
+        id("Google_NightlyTests")
+        name = "[Sarah Test] Nightly Tests"
+        buildType(AccTestBuildConfig(id,1, "internal/services/packageA"))
+        buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
+    }
+}
+
+fun MMUpstreamTesting() : Project {
+    var id = RelativeId("Google_MMUpstreamTesting") // Passed to child resources for making IDs
+
+    return Project {
+        id("Google_MMUpstreamTesting")
+        name = "[Sarah Test] MM Upstream Testing"
+        buildType(AccTestBuildConfig(id, 1, "internal/services/packageA"))
+        buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
+    }
+}
 
 object GoCodeVCSRoot : GitVcsRoot({
     name = "https://github.com/SarahFrench/teamcity-example#refs/heads/main"
@@ -55,3 +67,54 @@ object GoCodeVCSRoot : GitVcsRoot({
     branch = "refs/heads/main"
     branchSpec = "+refs/heads/release-*"
 })
+
+fun AccTestBuildConfig(parentId: Id, number: Number, path: String) : BuildType {
+
+    val parallelism: Int = 12
+    val testPrefix: String = "TestAcc"
+    val testTimeout: String = "12"
+    val sweeperRegions: String = "" // Not used
+    val sweeperRun: String = "" // Not used
+
+    return BuildType {
+
+        id = AbsoluteId("$parentId-my-build-$number")
+        name = "My Build $number"
+
+        vcs {
+            root(GoCodeVCSRoot)
+            cleanCheckout = true
+        }
+
+        steps {
+            SetGitCommitBuildId()
+            TagBuildToIndicatePurpose()
+            ConfigureGoEnv()
+            DownloadTerraformBinary()
+            RunAcceptanceTests()
+            // RunSweepers(sweeperName)
+        }
+
+        features {
+            Golang()
+        }
+
+        params {
+            // ConfigureGoogleSpecificTestParameters(environmentVariables)
+            TerraformAcceptanceTestParameters(parallelism, testPrefix, testTimeout, sweeperRegions, sweeperRun)
+            TerraformLoggingParameters()
+            TerraformAcceptanceTestsFlag()
+            TerraformCoreBinaryTesting()
+            TerraformShouldPanicForSchemaErrors()
+            ReadOnlySettings()
+            WorkingDirectory(path)
+        }
+
+        artifactRules = "%teamcity.build.checkoutDir%/debug*.txt"
+
+        failureConditions {
+            errorMessage = true
+            executionTimeoutMin = defaultBuildTimeoutDuration
+        }
+    }
+}
