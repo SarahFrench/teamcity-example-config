@@ -34,6 +34,11 @@ fun ParentProject() : Project {
             params {
                 param("TEST-PARAM", "pls ignore")
             }
+
+            // VCS Root(s) used by subprojects. This is separate to the VCS Root used to pull in versioned settings.
+            vcsRoot(GoCodeVCSRoot)
+
+            // SubProjects
             subProject(NightlyTests())
             subProject(MMUpstreamTesting())
         }
@@ -46,9 +51,6 @@ fun NightlyTests() : Project {
         id("Google_NightlyTests")
         name = "[Sarah Test] Nightly Tests"
 
-        // VCS Root used by builds. This is separate to the VCS Root used to pull in versioned settings.
-        vcsRoot(GoCodeVCSRoot)
-
         buildType(AccTestBuildConfig(id,1, "internal/services/packageA"))
         buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
     }
@@ -60,9 +62,6 @@ fun MMUpstreamTesting() : Project {
     return Project {
         id("Google_MMUpstreamTesting")
         name = "[Sarah Test] MM Upstream Testing"
-
-        // VCS Root used by builds. This is separate to the VCS Root used to pull in versioned settings.
-        vcsRoot(GoCodeVCSRoot)
 
         buildType(AccTestBuildConfig(id, 1, "internal/services/packageA"))
         buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
