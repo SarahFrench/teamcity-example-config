@@ -13,5 +13,15 @@ fun NightlyTests() : Project {
 
         buildType(AccTestBuildConfig(NightlyTestsProjectId,1, "internal/services/packageA"))
         buildType(AccTestBuildConfig(NightlyTestsProjectId,2, "internal/services/packageB"))
+
+        createProjectFeature {
+            projectCustomChart {
+                id = "ProjectCustomChart_1"
+                title = "Chart Title"
+                seriesTitle = "Series Title"
+                format = CustomChart.Format.DURATION
+            }
+        }
+
     }
 }
