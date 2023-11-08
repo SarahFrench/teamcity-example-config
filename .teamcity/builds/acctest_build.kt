@@ -1,6 +1,6 @@
 package builds
 
-import jetbrains.buildServer.configs.kotlin.AbsoluteId
+import jetbrains.buildServer.configs.kotlin.RelativeId
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.Id
 import vcs_roots.GoCodeVCSRoot
@@ -16,7 +16,7 @@ fun AccTestBuildConfig(parentId: Id, number: Number, path: String) : BuildType {
 
     return BuildType {
 
-        id = AbsoluteId("${parentId}_my_build_${number}") // Need to re-add the replace char function
+        id = RelativeId("${parentId}_my_build_${number}") // Need to re-add the replace char function
         name = "My Build $number"
 
         vcs {
