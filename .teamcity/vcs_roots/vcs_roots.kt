@@ -1,3 +1,5 @@
+package vcs_roots
+
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 
 object GoCodeVCSRoot : GitVcsRoot({

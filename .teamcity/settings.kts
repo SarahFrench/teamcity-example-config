@@ -1,26 +1,7 @@
 import jetbrains.buildServer.configs.kotlin.*
-
-/*
-The settings script is an entry point for defining a TeamCity
-project hierarchy. The script should contain a single call to the
-project() function with a Project instance or an init function as
-an argument.
-
-VcsRoots, BuildTypes, Templates, and subprojects can be
-registered inside the project using the vcsRoot(), buildType(),
-template(), and subProject() methods respectively.
-
-To debug settings scripts in command-line, run the
-
-    mvnDebug org.jetbrains.teamcity:teamcity-configs-maven-plugin:generate
-
-command and attach your debugger to the port 8000.
-
-To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
--> Tool Windows -> Maven Projects), find the generate task node
-(Plugins -> teamcity-configs -> teamcity-configs:generate), the
-'Debug' option is available in the context menu for the task.
-*/
+import vcs_roots.GoCodeVCSRoot
+import projects.NightlyTests
+import projects.MMUpstreamTesting
 
 version = "2023.05"
 
@@ -43,77 +24,3 @@ fun ParentProject() : Project {
         }
 }
 
-fun NightlyTests() : Project {
-    var id = RelativeId("NightlyTests") // Passed to child resources for making IDs
-
-    return Project {
-        id("Google_NightlyTests")
-        name = "[Sarah Test] Nightly Tests"
-
-        buildType(AccTestBuildConfig(id,1, "internal/services/packageA"))
-        buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
-    }
-}
-
-fun MMUpstreamTesting() : Project {
-    var id = RelativeId("MMUpstreamTesting") // Passed to child resources for making IDs
-
-    return Project {
-        id("Google_MMUpstreamTesting")
-        name = "[Sarah Test] MM Upstream Testing"
-
-        buildType(AccTestBuildConfig(id, 1, "internal/services/packageA"))
-        buildType(AccTestBuildConfig(id,2, "internal/services/packageB"))
-    }
-}
-
-fun AccTestBuildConfig(parentId: Id, number: Number, path: String) : BuildType {
-
-    val parallelism: Int = 12
-    val testPrefix: String = "TestAcc"
-    val testTimeout: String = "12"
-    val sweeperRegions: String = "" // Not used
-    val sweeperRun: String = "" // Not used
-
-    return BuildType {
-
-        id = AbsoluteId("${parentId}_my_build_${number}") // Need to re-add the replace char function
-        name = "My Build $number"
-
-        vcs {
-            root(GoCodeVCSRoot)
-            cleanCheckout = true
-        }
-
-        steps {
-            SetGitCommitBuildId()
-            TagBuildToIndicatePurpose()
-            ConfigureGoEnv()
-            DownloadTerraformBinary()
-            RunAcceptanceTests()
-            // RunSweepers(sweeperName)
-        }
-
-        features {
-            Golang()
-        }
-
-        params {
-            // ConfigureGoogleSpecificTestParameters(environmentVariables)
-            TerraformAcceptanceTestParameters(parallelism, testPrefix, testTimeout, sweeperRegions, sweeperRun)
-            TerraformLoggingParameters()
-            TerraformAcceptanceTestsFlag()
-            TerraformCoreBinaryTesting()
-            TerraformShouldPanicForSchemaErrors()
-            ReadOnlySettings()
-            WorkingDirectory(path)
-        }
-
-        artifactRules = "%teamcity.build.checkoutDir%/debug*.txt"
-
-        failureConditions {
-            errorMessage = true
-            executionTimeoutMin = defaultBuildTimeoutDuration
-        }
-    }
-}

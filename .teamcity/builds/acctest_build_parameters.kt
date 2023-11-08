@@ -1,6 +1,8 @@
+package builds
+
 import jetbrains.buildServer.configs.kotlin.*
-import jetbrains.buildServer.configs.kotlin.buildFeatures.GolangFeature
-import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
+import ProviderName
+import DefaultTerraformCoreVersion
 
 // NOTE: this file includes Extensions of the Kotlin DSL's class ParametrizedWithType
 // This allows us to reuse code in the config easily, while ensuring the same parameters are set across builds.
@@ -21,7 +23,7 @@ fun ParametrizedWithType.TerraformLoggingParameters() {
     text("env.TF_LOG_SDK_FRAMEWORK", "INFO")
 
     // Set where logs are sent
-    text("PROVIDER_NAME", providerName)
+    text("PROVIDER_NAME", ProviderName)
     text("env.TF_LOG_PATH_MASK", "%system.teamcity.build.checkoutDir%/debug-%PROVIDER_NAME%-%env.BUILD_NUMBER%-%s.txt")
 }
 
@@ -34,7 +36,7 @@ fun ParametrizedWithType.TerraformAcceptanceTestsFlag() {
 }
 
 fun ParametrizedWithType.TerraformCoreBinaryTesting() {
-    text("env.TERRAFORM_CORE_VERSION", defaultTerraformCoreVersion, "The version of Terraform Core which should be used for testing")
+    text("env.TERRAFORM_CORE_VERSION", DefaultTerraformCoreVersion, "The version of Terraform Core which should be used for testing")
     hiddenVariable("env.TF_ACC_TERRAFORM_PATH", "%system.teamcity.build.checkoutDir%/tools/terraform", "The path where the Terraform Binary is located")
 }
 

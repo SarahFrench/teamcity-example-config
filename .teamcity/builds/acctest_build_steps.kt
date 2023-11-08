@@ -1,5 +1,9 @@
+package builds
+
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
+import DefaultTerraformCoreVersion
+import UseTeamCityGoTest
 
 // NOTE: this file includes Extensions of the Kotlin DSL's class BuildSteps
 // This allows us to reuse code in the config easily, while ensuring the same build steps can be used across builds.
@@ -54,7 +58,7 @@ fun BuildSteps.DownloadTerraformBinary() {
     // https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip
     var terraformUrl = "https://releases.hashicorp.com/terraform/%env.TERRAFORM_CORE_VERSION%/terraform_%env.TERRAFORM_CORE_VERSION%_linux_amd64.zip"
     step(ScriptBuildStep {
-        name = "Download Terraform version %s".format(defaultTerraformCoreVersion)
+        name = "Download Terraform version %s".format(DefaultTerraformCoreVersion)
         scriptContent = """
         #!/bin/bash
         mkdir -p tools
@@ -77,7 +81,7 @@ fun BuildSteps.RunSweepers(sweeperStepName : String) {
 // - TeamCity's test runner - stops remaining tests after a failure
 // - jen20/teamcity-go-test - allows tests to continue after a failure, and requires a test binary
 fun BuildSteps.RunAcceptanceTests() {
-    if (useTeamCityGoTest) {
+    if (UseTeamCityGoTest) {
         step(ScriptBuildStep {
             name = "Run Tests"
             scriptContent = "go test -v \"%PACKAGE_PATH%\" -timeout=\"%TIMEOUT%h\" -test.parallel=\"%PARALLELISM%\" -run=\"%TEST_PREFIX%\" -json"
