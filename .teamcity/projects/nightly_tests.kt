@@ -24,7 +24,7 @@ fun NightlyTests() : Project {
                 seriesTitle = "Series Title"
                 format = CustomChart.Format.PERCENT
                 series = listOf(
-                    Serie(title = "Success Rate", key = SeriesKey.SUCCESS_RATE, sourceBuildTypeId = AbsoluteId("${NightlyTestsProjectId}_my_build_${1}"))
+                    Serie(title = "Success Rate", key = SeriesKey.SUCCESS_RATE, sourceBuildTypeId = AbsoluteId("${NightlyTestsProjectId}_my_build_${1}").toString())
                 )
             }
         }
