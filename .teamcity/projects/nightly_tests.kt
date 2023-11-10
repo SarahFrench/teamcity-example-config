@@ -28,18 +28,5 @@ fun NightlyTests() : Project {
 
             buildType(FinishBuildConfig(NightlyTestsProjectId))
         }
-
-        createProjectFeature {
-            projectCustomChart {
-                id = "ProjectCustomChart_1"
-                title = "Chart Title"
-                seriesTitle = "Series Title"
-                format = CustomChart.Format.PERCENT
-                series = listOf(
-                    Serie(title = "Success Rate", key = SeriesKey.SUCCESS_RATE, sourceBuildTypeId = AbsoluteId("${NightlyTestsProjectId}_my_build_${1}").toString())
-                )
-            }
-        }
-
     }
 }
