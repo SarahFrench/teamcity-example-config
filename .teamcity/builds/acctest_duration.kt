@@ -50,7 +50,7 @@ fun FinishBuildConfig(parentId: Id) : BuildType {
 
         steps {
             step(ScriptBuildStep {
-                name = "Record the start of the test suite"
+                name = "Record the end of the test suite"
                 scriptContent = """
                     #!/bin/bash
                     GIT_HASH=%system.build.vcs.number%
