@@ -4,6 +4,7 @@ import jetbrains.buildServer.configs.kotlin.AbsoluteId
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.Id
 import jetbrains.buildServer.configs.kotlin.buildSteps.ScriptBuildStep
+import vcs_roots.GoCodeVCSRoot
 
 
 fun StartBuildConfig(parentId: Id) : BuildType {
@@ -12,6 +13,11 @@ fun StartBuildConfig(parentId: Id) : BuildType {
 
         id = AbsoluteId("${parentId}_start") // Need to re-add the replace char function
         name = "Start"
+
+        vcs {
+            root(GoCodeVCSRoot)
+            cleanCheckout = true
+        }
 
         steps {
             step(ScriptBuildStep {
@@ -36,6 +42,11 @@ fun FinishBuildConfig(parentId: Id) : BuildType {
 
         id = AbsoluteId("${parentId}_finish") // Need to re-add the replace char function
         name = "Finish"
+
+        vcs {
+            root(GoCodeVCSRoot)
+            cleanCheckout = true
+        }
 
         steps {
             step(ScriptBuildStep {
