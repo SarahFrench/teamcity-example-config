@@ -18,15 +18,12 @@ fun NightlyTests() : Project {
         id("NightlyTests")
         name = "[Sarah Test] Nightly Tests"
 
-        sequential {
-            buildType(StartBuildConfig(NightlyTestsProjectId))
+        buildType(StartBuildConfig(NightlyTestsProjectId))
 
-            parallel{
-                buildType(AccTestBuildConfig(NightlyTestsProjectId,1, "internal/services/packageA"))
-                buildType(AccTestBuildConfig(NightlyTestsProjectId,2, "internal/services/packageB"))
-            }
+        buildType(AccTestBuildConfig(NightlyTestsProjectId,1, "internal/services/packageA"))
+        buildType(AccTestBuildConfig(NightlyTestsProjectId,2, "internal/services/packageB"))
 
-            buildType(FinishBuildConfig(NightlyTestsProjectId))
-        }
+        buildType(FinishBuildConfig(NightlyTestsProjectId))
+
     }
 }
