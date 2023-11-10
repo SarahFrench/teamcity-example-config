@@ -35,7 +35,7 @@ fun FinishBuildConfig(parentId: Id) : BuildType {
     return BuildType {
 
         id = AbsoluteId("${parentId}_finish") // Need to re-add the replace char function
-        name = "Start"
+        name = "Finish"
 
         steps {
             step(ScriptBuildStep {
